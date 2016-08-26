@@ -102,30 +102,98 @@ describe("About Applying What We Have Learnt", function() {
     };
 
     var largestPrimeFactor = function(n) {
-      return _.range(2, Math.ceil(n/2)).reduce(function(maxPrime, i) {
-        return (isPrime(i) && i > maxPrime) ? i : maxPrime;
+      return _.range(1, Math.ceil(n/2) + 1).reduce(function(maxPrime, i) {
+        return (isPrime(i) && i > maxPrime && n % i === 0) ? i : maxPrime;
       }, 1);
     };
 
     expect(largestPrimeFactor(21)).toBe(7);
+    expect(largestPrimeFactor(55)).toBe(11);
+    expect(largestPrimeFactor(4)).toBe(2);
   });
 
-  /*
   it("should find the largest palindrome made from the product of two 3 digit numbers", function () {
-    
+    var largestPalindrome = function(a, b) {
+      var arr = (a * b).toString().split('');
+      for (var i = arr.length; i > 1; i--) {
+        for (var j = 0, max = arr.length - i; j <= max; j++) {
+          if (arr.slice(j, j + i).toString() === arr.slice(j, j + i).reverse().toString()) return i;
+        }
+      }
+      return 1;
+    };
+
+    expect(largestPalindrome(123, 456)).toBe(2);
+    expect(largestPalindrome(123, 457)).toBe(2);
+    expect(largestPalindrome(100, 100)).toBe(4);
   });
 
   it("should find the smallest number divisible by each of the numbers 1 to 20", function () {
-      
-    
-  });
+    var primeFactors = function(n) {
+      if (n <= 2) return [n];
+      for (var i = 2; i < n; i++) {
+        if (n % i === 0) return [].concat(i, primeFactors(n/i));
+      }
+      return [n];
+    };
 
+    var consolidate = function(arr) {
+      return arr.reduce(function(res, n) {
+        res[n] = ( res[n] || 0) + 1;
+        return res;
+      }, []);
+    };
+
+    var smallestDivisible = function(a, b) {
+      var factors = [];
+
+      for (var i = a; i <= b; i++) {
+        consolidate(primeFactors(i)).forEach(function(count, index) {
+          factors[index] = Math.max(count, (factors[index] || 0));
+        });
+      }
+      
+      return factors.reduce(function(res, count, index) {
+        return res * Math.pow(index, count);
+      }, 1);
+    };
+
+    expect(smallestDivisible(1, 20)).toBe(232792560)
+  });
+  
   it("should find the difference between the sum of the squares and the square of the sums", function () {
-    
+    var diff = function(a, b) {
+      return Math.abs((Math.pow(a + b, 2)) - (Math.pow(a, 2) + Math.pow(b, 2)));
+    };
+
+    expect(diff(1, 2)).toBe(4);
+    expect(diff(6, 4)).toBe(48);
+    expect(diff(-2, 5)).toBe(20);
+    expect(diff(-5, -3)).toBe(30);
   });
 
   it("should find the 10001st prime", function () {
+    var isPrime = function(n) {
+      for (var i = 2, max = Math.ceil(Math.sqrt(n)); i <= max; i++) {
+        if (n % i === 0) return false;
+      }
+      return true;
+    };
 
+    var findPrime = function(nth) {
+      var count = 1, prime = 2, n = 3;
+      
+      while (count < nth) {
+        if (isPrime(n)) {
+          ++count;
+          prime = n;
+        }
+        ++n;
+      }
+
+      return prime;
+    };
+
+    expect(findPrime(10001)).toBe(104743);
   });
-  */
 });
